@@ -1,6 +1,6 @@
 "use client";
 
-import { FormOptions } from "../page";
+import { FormOptions } from "../create-account/page";
 
 interface TextInputProps {
   formOptions?: FormOptions;

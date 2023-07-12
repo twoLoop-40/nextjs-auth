@@ -3,13 +3,14 @@
 import { useForm } from "react-hook-form";
 import TextInput from "../components/text-input";
 import SubmitBtn from "../components/submit-btn";
+import RouteBtn from "@components/route-btn";
 import { useRouter } from "next/navigation";
 
 export interface FormOptions {
   [key: string]: any;
 }
 
-export interface CreateAccountValues {
+export interface AccountValues {
   email: string;
   username: string;
 }
@@ -21,7 +22,7 @@ const Page = () => {
     formState: { errors, isSubmitting },
     handleSubmit,
     reset,
-  } = useForm<CreateAccountValues>({
+  } = useForm<AccountValues>({
     mode: "onChange",
     defaultValues: {
       email: "",
@@ -29,29 +30,28 @@ const Page = () => {
     },
   });
 
-  const onAccountSubmit = (data: CreateAccountValues) => {
-    fetch("/api/create-account", {
+  const onLoginSubmit = (data: AccountValues) => {
+    fetch("/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     })
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.ok) {
-          router.replace("/login");
-        } else {
-          reset();
-        }
+      .then(async (response) => {
+        router.replace("/");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        reset();
+        console.log(err);
+      });
   };
+
   return (
     <div>
       <form
         className='w-full flex flex-col p-2 justify-center gap-y-4'
-        onSubmit={handleSubmit(onAccountSubmit)}
+        onSubmit={handleSubmit(onLoginSubmit)}
       >
         <TextInput
           label='Username'
@@ -70,7 +70,10 @@ const Page = () => {
           type='email'
           formOptions={{ required: "Please Write down your email" }}
         />
-        <SubmitBtn label={isSubmitting ? "Submitting..." : "Submit"} />
+        <div className='grid grid-cols-2 gap-x-2'>
+          <SubmitBtn label={isSubmitting ? "Submitting..." : "Login"} />{" "}
+          <RouteBtn label='Create Account' href='/create-account' />
+        </div>
       </form>
     </div>
   );

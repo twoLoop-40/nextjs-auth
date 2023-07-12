@@ -1,10 +1,7 @@
-"use server";
+import db from "@lib/db";
+import { AccountValues } from "@login/page";
 
-import { NextResponse } from "next/server";
-import { CreateAccountValues } from "../page";
-import db from "@/lib/db";
-
-const createAccountServer = async (data: CreateAccountValues) => {
+const createAccountServer = async (data: AccountValues) => {
   const { email, username } = data;
   try {
     await db?.user.create({
@@ -13,8 +10,10 @@ const createAccountServer = async (data: CreateAccountValues) => {
         username,
       },
     });
+    return { ok: true };
   } catch (error) {
     console.error(error);
+    return { ok: false };
   }
 };
 
